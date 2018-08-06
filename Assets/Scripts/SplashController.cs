@@ -111,6 +111,8 @@ public class SplashController : MonoBehaviour
         if (_hasCompletedFadeIn && !_hasCompletedFadeOut && Equals(_invisible, splashImage.color))
         {
             _hasCompletedFadeOut = true;
+            
+            // Kick off the coroutine to wait until we can load the next scene
             StartCoroutine(WaitThenCompleteFadingOut());
 
             if (Debug.isDebugBuild)
