@@ -1,103 +1,165 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
+/// <summary>
+/// Controller for the Splash screen in charge of fading in and fading out the splash image and loading the next scene
+/// </summary>
 public class SplashController : MonoBehaviour
 {
-	public SpriteRenderer logo;
-	public float duration = 4.0f;
-	public float wait = 2.0f;
+    // Requires an input image (no default)
+    public Image splashImage;
+	public float fadeDuration = 4.0f;
+	public float waitBetweenStepsDuration = 2.0f;
 
-	public bool debug = false;
+	private Color _invisible;
+	private Color _visible;
+	private bool _hasStartedFadeIn;
+	private bool _hasCompletedFadeIn;
+	private bool _hasCompletedFadeOut;
+	private bool _isReadyForNextScene;
+	private float _startTime;
+	private float _fadeInTime;
 
-	private Color invisible;
-	private Color visible;
-	private bool fadeStart;
-	private bool fadedIn;
-	private bool fadedOut;
-	private bool fadeComplete;
-	private float startTime;
-	private float fadeInTime;
-
-	// Use this for initialization
-	void Start ()
+    /// <summary>
+    /// Initialize the controller on the first frame
+    /// </summary>
+	void Start()
 	{
-		fadeStart = false;
-		fadedIn = false;
-		fadedOut = false;
-		fadeComplete = false;
+        // Validate that the splash image exists
+        if (Debug.isDebugBuild)
+        {
+            Debug.Assert(splashImage != null, "Error: Splash Image Unspecified / Null");
+        }
 
-		invisible = new Color (1.0f, 1.0f, 1.0f, 0.0f);
-		visible = new Color (1.0f, 1.0f, 1.0f, 1.0f);
+        // Set default values for private parameters
+        _hasStartedFadeIn = false;
+		_hasCompletedFadeIn = false;
+		_hasCompletedFadeOut = false;
+		_isReadyForNextScene = false;
 
-		// Ensure that the logo starts off hidden so it can fade in and out in the right order
-		logo.color = invisible;
+		_invisible = new Color(1.0f, 1.0f, 1.0f, 0.0f);
+		_visible = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-		if (debug)
-			Debug.Log ("Starting Splash Color: " + logo.color);
+        // Ensure that the image starts off hidden so it can fade in and out in the right order
+        splashImage.color = _invisible;
 
-		StartCoroutine (WaitThenStart ());
+        if (Debug.isDebugBuild)
+        {
+            Debug.Log("Starting Splash Color: " + splashImage.color);
+        }
+
+        // Kick off the coroutine for the fading process
+		StartCoroutine(WaitThenStartFadingIn());
 	}
-	
-	// FixedUpdate is called once per frame
-	void Update ()
+
+    /// <summary>
+    /// Update is called once per frame after the first frame
+    /// </summary>
+    void Update()
 	{
 		// Use floats as value step when used with timestamp difference and max range value of duration
-		float t = (Time.time - startTime) / duration;
-		float tprime = (Time.time - fadeInTime) / duration;
+		float timeToFadeIn = (Time.time - _startTime) / fadeDuration;
+		float timeToFadeOut = (Time.time - _fadeInTime) / fadeDuration;
 
-		if (debug)
-			Debug.Log ("Current Splash Color: " + logo.color);
+        if (Debug.isDebugBuild)
+        {
+            Debug.Log("Current Splash Color: " + splashImage.color);
+        }
 
-		// Smoothly fade in if logo has not been faded in yet
-		if (!fadedIn && fadeStart)
-			logo.color = new Color (1.0f, 1.0f, 1.0f, Mathf.SmoothStep (0.0f, 1.0f, t));
+        // Smoothly fade in if image has not been faded in yet
+        if (!_hasCompletedFadeIn && _hasStartedFadeIn)
+        {
+            splashImage.color = new Color(1.0f, 1.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, timeToFadeIn));
+        }
 
-		// Smoothly fade out if logo has already been faded in and has not faded out yet
-		else if (fadedIn && !fadedOut && fadeStart)
-			logo.color = new Color (1.0f, 1.0f, 1.0f, Mathf.SmoothStep (1.0f, 0.0f, tprime));
+        // Smoothly fade out if image has already been faded in and has not faded out yet
+        else if (_hasCompletedFadeIn && !_hasCompletedFadeOut && _hasStartedFadeIn)
+        {
+            splashImage.color = new Color(1.0f, 1.0f, 1.0f, Mathf.SmoothStep(1.0f, 0.0f, timeToFadeOut));
+        }
 
-		if (Color.Equals (visible, logo.color)) {
-			fadedIn = true;
-			fadeInTime = Time.time;
-				
-			if (debug)
-				Debug.Log ("Splash Screen successfully faded in.");
-
-		}
-
-		if (fadedIn && !fadedOut && Color.Equals (invisible, logo.color)) {
-			fadedOut = true;
-			StartCoroutine (WaitThenComplete ());
-
-			if (debug)
-				Debug.Log ("Splash Screen successfully faded out.");
-		}
-
-		// Load main menu once splash screen fade process is completed
-		if (fadeComplete) {
-
-			if (debug)
-				Debug.Log ("Loading scene: Main Menu");
-
-			SceneManager.LoadScene ("MainMenu");
-		}
-		
+        // Check whether specific fade conditions have been met in the following functions and triggers next action if so
+        CheckFadeIn();
+        CheckFadeOut();
+        CheckLoadNextScene();
 	}
 
-	// Once logo fades out completely, briefly wait before going to main menu
-	IEnumerator WaitThenComplete ()
+    /// <summary>
+    /// Function to check if the image has completed fading in and sets appropriate flags and timestamps
+    /// </summary>
+    void CheckFadeIn()
+    {
+        if (Equals(_visible, splashImage.color))
+        {
+            _hasCompletedFadeIn = true;
+            _fadeInTime = Time.time;
+
+            if (Debug.isDebugBuild)
+            {
+                Debug.Log("Splash screen successfully faded in.");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Function to check if the image has completed fading out, sets appropriate flags, and kicks off completion coroutine
+    /// </summary>
+    void CheckFadeOut()
+    {
+        if (_hasCompletedFadeIn && !_hasCompletedFadeOut && Equals(_invisible, splashImage.color))
+        {
+            _hasCompletedFadeOut = true;
+            StartCoroutine(WaitThenCompleteFadingOut());
+
+            if (Debug.isDebugBuild)
+            {
+                Debug.Log("Splash Screen successfully faded out.");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Load next scene once splash screen fade process is completed
+    /// </summary>
+    void CheckLoadNextScene()
+    {
+        if (_isReadyForNextScene)
+        {
+            // Get the next scene in the build index list based on the current scene's build index
+            Scene currentScene = SceneManager.GetActiveScene();
+            int nextSceneBuildIndex = currentScene.buildIndex + 1;
+
+            if (Debug.isDebugBuild)
+            {
+                Debug.Log("Current scene " + currentScene.name + " is at build index " + currentScene.buildIndex);
+                Debug.Log("Loading next scene at build index " + nextSceneBuildIndex);
+            }
+
+            // Finally, load the next scene when ready
+            SceneManager.LoadSceneAsync(nextSceneBuildIndex);
+        }
+    }
+
+    /// <summary>
+    /// Once image fades out completely, briefly wait before doing anything else, purely aesthetic
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator WaitThenCompleteFadingOut()
 	{
-		yield return new WaitForSeconds (wait);
-		fadeComplete = true;
+		yield return new WaitForSeconds(waitBetweenStepsDuration);
+		_isReadyForNextScene = true;
 	}
 
-	// Briefly wait until starting to fade in the logo, purely aesthetic
-	IEnumerator WaitThenStart ()
+    /// <summary>
+    /// Briefly wait until starting to fade in the image, purely aesthetic
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator WaitThenStartFadingIn()
 	{
-		yield return new WaitForSeconds (wait);
-		fadeStart = true;
-		startTime = Time.time;
+		yield return new WaitForSeconds(waitBetweenStepsDuration);
+		_hasStartedFadeIn = true;
+		_startTime = Time.time;
 	}
-		
 }
