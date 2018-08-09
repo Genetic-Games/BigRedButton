@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfbed82b67378aa4995449946eab60d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highScoreTextBox: {fileID: 0}
+  highScoreTextBox: {fileID: 881554194}
 --- !u!4 &515092395
 Transform:
   m_ObjectHideFlags: 0
