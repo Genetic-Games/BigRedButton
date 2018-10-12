@@ -6,17 +6,16 @@ namespace BigRedButton.SceneControllers
 {
     public class ButtonGameController : MonoBehaviour
     {
+        private bool _isCurrentScoreHighScore = false;
 
-        private bool isCurrentScoreHighScore = false;
+        private ulong _currentScore = 0;
+        private ulong _highScore = 0;
 
-        private ulong currentScore = 0;
-        private ulong highScore = 0;
+        private string _currentScoreText = "Current Score: ";
+        private string _highScoreText = "High Score: ";
+        private string _newHighScoreText = "New High Score!";
 
-        private string currentScoreText = "Current Score: ";
-        private string highScoreText = "High Score: ";
-        private string newHighScoreText = "New High Score!";
-
-        private string username;
+        private string _username;
 
         /// <summary>
         /// Requires a text box to display the current score
@@ -38,10 +37,10 @@ namespace BigRedButton.SceneControllers
         /// </summary>
         void Start()
         {
-            UpdateTextBox(currentScoreTextBox, currentScoreText + currentScore);
-            UpdateTextBox(highScoreTextBox, highScoreText + highScore);
-            UpdateTextBox(newHighScoreTextBox, newHighScoreText);
-            newHighScoreTextBox.gameObject.SetActive(isCurrentScoreHighScore);
+            UpdateTextBox(currentScoreTextBox, _currentScoreText + _currentScore);
+            UpdateTextBox(highScoreTextBox, _highScoreText + _highScore);
+            UpdateTextBox(newHighScoreTextBox, _newHighScoreText);
+            newHighScoreTextBox.gameObject.SetActive(_isCurrentScoreHighScore);
 
             if (Debug.isDebugBuild)
             {
@@ -64,13 +63,13 @@ namespace BigRedButton.SceneControllers
         /// <param name="score"/>
         private void SetHighScore(ulong score)
         {
-            if (!isCurrentScoreHighScore)
+            if (!_isCurrentScoreHighScore)
             {
-                isCurrentScoreHighScore = true;
-                newHighScoreTextBox.gameObject.SetActive(isCurrentScoreHighScore);
+                _isCurrentScoreHighScore = true;
+                newHighScoreTextBox.gameObject.SetActive(_isCurrentScoreHighScore);
             }
 
-            highScore = score;
+            _highScore = score;
         }
 
         /// <summary>
@@ -99,14 +98,14 @@ namespace BigRedButton.SceneControllers
         /// </summary>
         public void IncrementCount()
         {
-            currentScore++;
-            UpdateTextBox(currentScoreTextBox, currentScoreText + currentScore);
+            _currentScore++;
+            UpdateTextBox(currentScoreTextBox, _currentScoreText + _currentScore);
 
             // Check if it's a new high score and handle if it is
-            if (IsNewHighScore(currentScore, highScore))
+            if (IsNewHighScore(_currentScore, _highScore))
             {
-                SetHighScore(currentScore);
-                UpdateTextBox(highScoreTextBox, highScoreText + highScore);
+                SetHighScore(_currentScore);
+                UpdateTextBox(highScoreTextBox, _highScoreText + _highScore);
             }
         }
     }

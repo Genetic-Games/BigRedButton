@@ -5,7 +5,6 @@ namespace BigRedButton.SceneControllers
 {
     public class MainMenuController : MonoBehaviour
     {
-
         /// <summary>
         /// From the main menu, load a different scene and transition into it
         /// </summary>
