@@ -1,4 +1,4 @@
-﻿using BigRedButton.DataAccess;
+﻿using BigRedButton.AudioControllers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +6,8 @@ namespace BigRedButton.SceneControllers
 {
     public class ButtonGameController : MonoBehaviour
     {
+
+        // @TODO - Comment all of these private variables
         private bool _isCurrentScoreHighScore = false;
 
         private ulong _currentScore = 0;
@@ -33,6 +35,11 @@ namespace BigRedButton.SceneControllers
         public Text newHighScoreTextBox;
 
         /// <summary>
+        /// Requires a sound effect controller to store SFX and play them when needed
+        /// </summary>
+        public SoundEffectController soundEffectController;
+
+        /// <summary>
         /// Initialize the game state
         /// </summary>
         void Start()
@@ -44,9 +51,10 @@ namespace BigRedButton.SceneControllers
 
             if (Debug.isDebugBuild)
             {
-                Debug.Assert(currentScoreTextBox != null, "Error: Current Score Text Box Unspecified / Null");
-                Debug.Assert(highScoreTextBox != null, "Error: High Score Text Box Unspecified / Null");
-                Debug.Assert(newHighScoreTextBox != null, "Error: New High Score Text Box Unspecified / Null");
+                Debug.Assert(currentScoreTextBox != null, "ERROR: Current Score Text Box Unspecified / Null");
+                Debug.Assert(highScoreTextBox != null, "ERROR: High Score Text Box Unspecified / Null");
+                Debug.Assert(newHighScoreTextBox != null, "ERROR: New High Score Text Box Unspecified / Null");
+                Debug.Assert(soundEffectController != null, "ERROR: Sound Effect Controller Unspecified / Null");
             }
         }
 
