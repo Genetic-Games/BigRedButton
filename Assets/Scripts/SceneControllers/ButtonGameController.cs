@@ -109,6 +109,12 @@ namespace BigRedButton.SceneControllers
             _currentScore++;
             UpdateTextBox(currentScoreTextBox, _currentScoreText + _currentScore);
 
+            // Only consider playing a sound if there is not a sound being played and we should play one
+            if (!soundEffectController.IsSoundPlaying() && soundEffectController.ShouldRandomSoundPlay())
+            {
+                soundEffectController.PlayRandomSound();
+            }
+
             // Check if it's a new high score and handle if it is
             if (IsNewHighScore(_currentScore, _highScore))
             {
