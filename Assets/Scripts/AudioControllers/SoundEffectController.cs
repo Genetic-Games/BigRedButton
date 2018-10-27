@@ -22,7 +22,9 @@ namespace BigRedButton.AudioControllers
             if (Debug.isDebugBuild)
             {
                 Debug.Assert(SoundEffects != null && SoundEffects.Count > 0, "ERROR: No sound effects found, list empty or null");
-                Debug.Assert(TargetScoreSoundEffects != null, "ERROR: Target score sound effects not found, dictionary null");
+
+                // @TODO - Uncomment me when ready after figuring this out
+                // Debug.Assert(TargetScoreSoundEffects != null, "ERROR: Target score sound effects not found, dictionary null");
             }
         }
 
