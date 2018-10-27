@@ -6,7 +6,7 @@ namespace BigRedButton.AudioControllers
     public class SoundEffectController : MonoBehaviour
     {
         /// <summary>
-        /// The source of where the audio will play
+        /// Requires a source where the audio will play
         /// </summary>
         public AudioSource soundEffectSource;
 
@@ -16,7 +16,7 @@ namespace BigRedButton.AudioControllers
         public float chanceToPlaySoundEffect = 0.05f;
 
         /// <summary>
-        /// A list of sound effects to use at arbitrary score times
+        /// Requires a list of sound effects to use at arbitrary score times
         /// </summary>
         public List<AudioClip> soundEffects;
 
@@ -24,7 +24,7 @@ namespace BigRedButton.AudioControllers
         /// A mapping of score numbers to audio clips that could be played at specific scores
         /// @TODO - Figure out why this won't show up in Unity Game Editor
         /// </summary>
-        public Dictionary<ulong, AudioClip> targetScoreSoundEffects;
+        public Dictionary<ulong, AudioClip> targetScoreSoundEffects = null;
 
         // Initialize the sound effects starting state
         void Start()

@@ -42,7 +42,7 @@ namespace BigRedButton.SceneControllers
         /// <summary>
         /// Initialize the game state
         /// </summary>
-        void Start()
+        protected void Start()
         {
             UpdateTextBox(currentScoreTextBox, _currentScoreText + _currentScore);
             UpdateTextBox(highScoreTextBox, _highScoreText + _highScore);
@@ -61,7 +61,7 @@ namespace BigRedButton.SceneControllers
         /// <summary>
         /// Update the game state every frame
         /// </summary>
-        void Update()
+        protected void Update()
         {
         }
 
