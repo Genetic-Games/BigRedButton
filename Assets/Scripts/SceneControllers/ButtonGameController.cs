@@ -10,8 +10,9 @@ namespace BigRedButton.SceneControllers
         // @TODO - Comment all of these private variables
         private bool _isCurrentScoreHighScore = false;
 
-        private ulong _currentScore = 0;
-        private ulong _highScore = 0;
+        // @TODO - Check to make sure that we don't overflow to negatives somewhere
+        private long _currentScore = 0;
+        private long _highScore = 0;
 
         private string _currentScoreText = "Current Score: ";
         private string _highScoreText = "High Score: ";
@@ -42,7 +43,7 @@ namespace BigRedButton.SceneControllers
         /// <summary>
         /// Initialize the game state
         /// </summary>
-        protected void Start()
+        internal void Start()
         {
             UpdateTextBox(currentScoreTextBox, _currentScoreText + _currentScore);
             UpdateTextBox(highScoreTextBox, _highScoreText + _highScore);
@@ -61,7 +62,7 @@ namespace BigRedButton.SceneControllers
         /// <summary>
         /// Update the game state every frame
         /// </summary>
-        protected void Update()
+        internal void Update()
         {
         }
 
@@ -69,12 +70,13 @@ namespace BigRedButton.SceneControllers
         /// Use to check if the current score is a new high score and set high score and flags if so
         /// </summary>
         /// <param name="score"/>
-        private void SetHighScore(ulong score)
+        private void SetHighScore(long score)
         {
             if (!_isCurrentScoreHighScore)
             {
                 _isCurrentScoreHighScore = true;
                 newHighScoreTextBox.gameObject.SetActive(_isCurrentScoreHighScore);
+
             }
 
             _highScore = score;
@@ -86,7 +88,7 @@ namespace BigRedButton.SceneControllers
         /// <param name="current"></param>
         /// <param name="highest"></param>
         /// <returns></returns>
-        private bool IsNewHighScore(ulong current, ulong highest)
+        private bool IsNewHighScore(long current, long highest)
         {
             return current >= highest;
         }

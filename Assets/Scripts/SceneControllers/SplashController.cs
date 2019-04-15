@@ -27,7 +27,7 @@ namespace BigRedButton.SceneControllers
         /// <summary>
         /// Initialize the controller on the first frame
         /// </summary>
-        void Start()
+        internal void Start()
         {
             // Validate that the splash image exists
             if (Debug.isDebugBuild)
@@ -59,7 +59,7 @@ namespace BigRedButton.SceneControllers
         /// <summary>
         /// Update is called once per frame after the first frame
         /// </summary>
-        void Update()
+        internal void Update()
         {
             // Use floats as value step when used with timestamp difference and max range value of duration
             float timeToFadeIn = (Time.time - _startTime) / fadeDuration;

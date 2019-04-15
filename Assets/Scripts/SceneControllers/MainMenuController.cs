@@ -29,7 +29,7 @@ namespace BigRedButton.SceneControllers
         /// <summary>
         /// Initialize the main menu state on the first frame
         /// </summary>
-        protected void Start()
+        internal void Start()
         {
             if (Debug.isDebugBuild)
             {
@@ -59,7 +59,7 @@ namespace BigRedButton.SceneControllers
         /// <param name="name">Username specified by the user</param>
         public void SetUsername(string name)
         {
-            // @TODO - Sanitize the username input either here or when going to the DB
+            // @TODO - Sanitize the username input either here and/or when going to the DB
             if (_username != name)
             {
                 _username = name;

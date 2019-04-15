@@ -24,7 +24,7 @@ namespace BigRedButton.AudioControllers
         /// A mapping of score numbers to audio clips that could be played at specific scores
         /// @TODO - Figure out why this won't show up in Unity Game Editor
         /// </summary>
-        public Dictionary<ulong, AudioClip> targetScoreSoundEffects = null;
+        public Dictionary<long, AudioClip> targetScoreSoundEffects = null;
 
         // Initialize the sound effects starting state
         void Start()
@@ -32,7 +32,7 @@ namespace BigRedButton.AudioControllers
             if (Debug.isDebugBuild)
             {
                 Debug.Assert(soundEffectSource != null, "ERROR: No audio source found, object null or not initialized");
-                Debug.Assert(soundEffects != null && soundEffects.Count > 0, "ERROR: No sound effects found, list empty or null");
+                Debug.Assert(soundEffects?.Count > 0, "ERROR: No sound effects found, list empty or null");
                 Debug.Assert(chanceToPlaySoundEffect >= 0.0f && chanceToPlaySoundEffect <= 1.0f, 
                     "ERROR: Random sound effect probability not within allowable limits [0.0f, 1.0f]");
 
